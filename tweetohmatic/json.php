@@ -21,7 +21,10 @@ switch($_REQUEST['c']) {
 		$stmt->bindValue(':pass',hash('sha512',$_REQUEST['p']),SQLITE3_TEXT);
 		$result = $stmt->execute();
 		if($result->fetchArray())
-			$rv=array('auth'=>1);
+			$rv=array(
+					'auth'=>1,
+					'perm'=>$db->getPerm($_REQUEST['u'])
+				);
 		else
 			$rv=array('auth'=>0);
 		break;
