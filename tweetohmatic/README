@@ -1,0 +1,10 @@
+WIP
+
+Feature wishlist:
+- moderation queue
+- user-based permission model
+  - permission to edit twitter account details
+  - permission to post
+  - permission to suggest
+  - permission to approve
+- email notification of new tweets in moderation queue
