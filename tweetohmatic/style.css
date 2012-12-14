@@ -1,0 +1,21 @@
+@CHARSET "UTF-8";
+
+#login {
+	display: none;
+	width: 50%;
+	height: 5em;
+	margin-top: 10%;
+	margin-left: 25%;
+	border: 1px solid black;
+}
+
+#login_feedback {
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+	text-align: center;
+	color: red;
+	background: yellow;
+	border: 2px solid red;
+	display: none;
+}
