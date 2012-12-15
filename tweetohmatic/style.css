@@ -1,6 +1,33 @@
 @CHARSET "UTF-8";
 
+body {
+	position: relative;
+}
+
+#tweet, #moderate, #user_admin, #twitter_account {
+	display: none;
+}
+
+#menu {
+	width: 100%;
+	height: 1.3em;
+	border-bottom: 1px solid gray;
+}
+
+#menu span {
+	cursor: pointer;
+	padding-left: 1em;
+	padding-right: 1em;
+	border-left: 1px solid gray;
+}
+
+div.label {
+	float: left;
+	width: 15em;
+}
+
 #login {
+	position: absolute;
 	display: none;
 	width: 50%;
 	height: 5em;
@@ -17,5 +44,9 @@
 	color: red;
 	background: yellow;
 	border: 2px solid red;
+	display: none;
+}
+
+#templates {
 	display: none;
 }
