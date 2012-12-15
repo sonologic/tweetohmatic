@@ -8,48 +8,52 @@
 <link href="style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-<div id="menu"></div>
-<div id="tweet" class="desktop">
-	<form id="tweet_form" action="#">
-		<textarea cols="35" rows="4" name="status"></textarea><br/>
-		<input type="submit"/>
-	</form>
-</div>
-<div id="moderate" class="desktop">
-<table>
-	<thead>
-		<tr><th>time</th><th>status</th><th>user</th><th>action</th></tr>
-	</thead>
-	<tbody></tbody>
-</table>
-</div>
-<div id="user_admin" class="desktop">
-<table>
-	<thead>
-		<tr><th>user</th><th>change pw</th><th>perm</th></tr>
-	</thead>
-	<tbody></tbody>
-</table>	
-</div>
-<div id="twitter_account" class="desktop">
-	<form id="twitter_auth_form">
-		<div class="label">Consumer key:</div><input type="text" name="consumer_key"/><br/>
-		<div class="label">Consumer secret:</div><input type="text" name="consumer_key_secret"/><br/>
-		<div class="label">Access token:</div><input type="text" name="access_token"/><br/>
-		<div class="label">Access token secret:</div><input type="text" name="access_token_secret"/><br/>
-		<input type="submit" name="set"/>
-	</form>
-</div>
-<div id="login">
-	<form id="login_form" action="#">
-	    <div id="login_feedback">Invalid credentials!</div>
-		User: <input type="text" name="login_name"/><br/>
-		Pass: <input type="password" name="login_password"/><br/>
-		<input type="submit" name="Login!"/>
-	</form>
-</div>
-<div id="templates">
-	<div id="menu_template"><span id="menu_template_id">menu_template_text</span></div>
+<div id="loading"></div>
+<div id="content">
+	<div id="menu"></div>
+	<div id="tweet" class="desktop">
+		<form id="tweet_form" action="#">
+			<textarea cols="35" rows="4" name="status"></textarea><br/>
+			<input type="submit"/>
+		</form>
+		<div id="tweet_feedback"></div>
+	</div>
+	<div id="moderate" class="desktop">
+	<table>
+		<thead>
+			<tr><th>time</th><th>status</th><th>user</th><th>action</th></tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+	</div>
+	<div id="user_admin" class="desktop">
+	<table>
+		<thead>
+			<tr><th>user</th><th>change pw</th><th>perm</th></tr>
+		</thead>
+		<tbody></tbody>
+	</table>	
+	</div>
+	<div id="twitter_account" class="desktop">
+		<form id="twitter_auth_form">
+			<div class="label">Consumer key:</div><input type="text" name="consumer_key"/><br/>
+			<div class="label">Consumer secret:</div><input type="text" name="consumer_key_secret"/><br/>
+			<div class="label">Access token:</div><input type="text" name="access_token"/><br/>
+			<div class="label">Access token secret:</div><input type="text" name="access_token_secret"/><br/>
+			<input type="submit" name="set"/>
+		</form>
+	</div>
+	<div id="login">
+		<form id="login_form" action="#">
+		    <div id="login_feedback">Invalid credentials!</div>
+			User: <input type="text" name="login_name"/><br/>
+			Pass: <input type="password" name="login_password"/><br/>
+			<input type="submit" name="Login!"/>
+		</form>
+	</div>
+	<div id="templates">
+		<div id="menu_template"><span id="menu_template_id">menu_template_text</span></div>
+	</div>
 </div>
 </body>
 </html>

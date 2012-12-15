@@ -1,10 +1,35 @@
 @CHARSET "UTF-8";
 
-body {
-	position: relative;
+body,html {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#loading {
+	position: absolute;
+	display: none;
+	top: 0;
+	left: 0;
+	background: rgba(0,0,0,0.8);
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+}
+#content {
+	top: 0;
+	left: 0;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 10;	
 }
 
 #tweet, #moderate, #user_admin, #twitter_account {
+	display: none;
+}
+
+#tweet_feedback {
 	display: none;
 }
 

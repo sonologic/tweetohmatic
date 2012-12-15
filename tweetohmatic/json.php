@@ -66,8 +66,10 @@ switch($_REQUEST['c']) {
 		require_once('twitter.php');
 		if($db->hasPerm($_SESSION['user'],'tweet')) {
 			$rv=tweet($db,$_REQUEST['status']);
+			$rv['feedback']='Status updated.';
 		} else {
 			$rv=queue($db,$_REQUEST['status']);
+			$rv['feedback']='Status queued for moderation.';
 		}
 		break;
 	case 'gq': // get_queue

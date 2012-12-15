@@ -9,22 +9,31 @@ $(document).ready(function() {
 	});
 	
 	$("#twitter_auth_form").submit(function() {
+		loading();
 		$.getJSON(
 				'json.php?c=st&'+$("#twitter_auth_form").serialize(),
 				{},
 				function(data) {
-					
+					loaded();
 				}
 		)
 		return false;
 	});
 	
 	$("#tweet_form").submit(function() {
+		$("#tweet_feedback").hide();
+		loading();
 		$.getJSON(
 				'json.php?c=t&'+$("#tweet_form").serialize(),
 				{},
 				function(data) {
-					
+					loaded();
+					if(data.error=='') {
+						$("#tweet_feedback").text(data.feedback);
+					} else {
+						$("#tweet_feedback").text(data.error);
+					}
+					$("#tweet_feedback").show();
 				}
 		)
 		return false;		
@@ -42,11 +51,21 @@ $(document).ready(function() {
 	);
 });
 
+function loading() {
+	$("#loading").fadeIn('fast');
+}
+
+function loaded() {
+	$("#loading").fadeOut('fast');
+}
+
 function moderate() {
+	loading();
 	$.getJSON(
 			'json.php',
 			{'c':'gq'},
 			function(data) {
+				loaded();
 				$("#moderate table tbody").empty();
 				for(var idx in data.queue) {
 					item=data.queue[idx];
@@ -119,54 +138,71 @@ function edit_twitter_account() {
 }
 
 function user_admin() {
+	loading();
 	$.getJSON(
 			'json.php',
 			{'c':'ul'},
 			function(data) {
-				$("#user_admin table tbody").empty();
-				for(var username in data.users) {
-					perm=data.users[username];
-					
-					perm_types=[
-					            'tweet',
-					            'twitter_account',
-					            'user_admin',
-					            'moderate'
-					           ];
-					
-					perms="";
-					for(pidx in perm_types) {
-						perms += '<input type="checkbox" name="'+perm_types[pidx]+'" value="1"';
+				if(data.error=='') {
+					$("#user_admin table tbody").empty();
+					for(var username in data.users) {
+						perm=data.users[username];
 						
-						if($.inArray(perm_types[pidx],perm)!=-1)
-								 perms += ' checked="checked"';
-						perms += '/>'+perm_types[pidx]+'<br/>';
-					}
+						perm_types=[
+						            'tweet',
+						            'twitter_account',
+						            'user_admin',
+						            'moderate'
+						           ];
+						
+						perms="";
+						for(pidx in perm_types) {
+							perms += '<input type="checkbox" name="'+perm_types[pidx]+'" value="1"';
+							
+							if($.inArray(perm_types[pidx],perm)!=-1)
+									 perms += ' checked="checked"';
+							perms += '/>'+perm_types[pidx]+'<br/>';
+						}
+						
+						$("#user_admin table tbody").append(
+								"<tr><td>"+username+"</td>"+
+								"<td>..</td>"+
+								"<td><form id='user_"+username+"' action='#'>"+perms+
+								"<input type='submit' name='save' value='save'>"+
+								"</form></td>"+
+								"</tr>"
+						);
 					
-					$("#user_admin table tbody").append(
-							"<tr><td>"+username+"</td>"+
-							"<td>..</td>"+
-							"<td><form id='user_"+username+"' action='#'>"+perms+
-							"<input type='submit' name='save' value='save'>"+
-							"</form></td>"+
-							"</tr>"
-					);
-				
-					$("#user_"+username).data('user',username);
-					$("#user_"+username).submit(function(event) {
-						user = $(event.currentTarget).data('user');
-						$.getJSON(
-								'json.php',
-								'c=su&u='+user+'&'+$(event.currentTarget).serialize(),
-								function(data) {
-									
-								});
-						return false;
-					});
+						$("#user_"+username).data('user',username);
+						$("#user_"+username).submit(function(event) {
+							loading();
+							user = $(event.currentTarget).data('user');
+							$.getJSON(
+									'json.php',
+									'c=su&u='+user+'&'+$(event.currentTarget).serialize(),
+									function(data) {
+										loaded();
+										if(data.error=='') {
+											alert('User permission saved.');
+										} else {
+											alert('Error: '+data.error);
+										}									
+									}).error(function() {
+										loaded();
+										alert('Fatal error!');
+									});
+							return false;
+						});
+					}
+					loaded();
+					$(".desktop").hide();
+					$("#user_admin").show();
+				} else {
+					loaded();
+					alert('User list request failed!')
 				}
-				
-				$(".desktop").hide();
-				$("#user_admin").show('slow');				
+			}).error(function() {
+				alert('Fatal error! Please reload.');
 			});
 	$(".desktop").hide();
 	$("#user_admin").show('slow');
