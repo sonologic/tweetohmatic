@@ -58,13 +58,63 @@ switch($_REQUEST['c']) {
 	case 't': // tweet
 		require_once('twitter.php');
 		if($db->hasPerm($_SESSION['user'],'tweet')) {
-			$rv=tweet($db);
+			$rv=tweet($db,$_REQUEST['status']);
 		} elseif($db->hasPerm($_SESSION['user'],'queue')) {
-			$rv=queue($db);
+			$rv=queue($db,$_REQUEST['status']);
 		} else {
 			$rv=array('error'=>'Access denied.');
 		}
 		break;
+	case 'gq': // get_queue
+		if($db->hasPerm($_SESSION['user'],'moderate')) {
+			$rv=array('queue'=>array());
+			$stmt=$db->prepare("SELECT * FROM queue ORDER BY ts DESC");
+			$result=$stmt->execute();
+			while($row=$result->fetchArray(SQLITE3_ASSOC)) {
+				$rv['queue'][]=$row;
+			}
+		} else {
+			$rv=array('error'=>'Access denied.');
+		}
+		break;
+	case 'd': // delete
+		if($db->hasPerm($_SESSION['user'],'moderate')) {
+			$stmt=$db->prepare("DELETE FROM queue WHERE username=:user AND ts=:ts");
+			$stmt->bindValue(':user',$_REQUEST['u']);
+			$stmt->bindValue(':ts',$_REQUEST['ts']);
+			if(!$stmt->execute()) {
+				$rv=array('error'=>'failed to delete.');
+			} else {
+				$rv=array('error'=>'');
+			}
+		} else {
+			$rv=array('error'=>'Access denied.');			
+		}
+		break;
+	case 'at': // approve_tweet
+		if($db->hasPerm($_SESSION['user'],'moderate')) {
+			$stmt=$db->prepare("SELECT * FROM queue WHERE username=:user AND ts=:ts");
+			$stmt->bindValue(':user',$_REQUEST['u']);
+			$stmt->bindValue(':ts',$_REQUEST['ts']);
+			$result=$stmt->execute();
+			if($row=$result->fetchArray()) {
+				require_once('twitter.php');
+				
+				$rv=tweet($db,$row['status']);
+			
+				$stmt=$db->prepare("DELETE FROM queue WHERE username=:user AND ts=:ts");
+				$stmt->bindValue(':user',$_REQUEST['u']);
+				$stmt->bindValue(':ts',$_REQUEST['ts']);
+				if(!$stmt->execute()) {
+					$rv=array('error'=>'Tweet sent but failed to delete from queue.');
+				}
+			} else {
+				$rv=array('error'=>'No such tweet.');
+			}
+		} else {
+			$rv=array('error'=>'Access denied.');
+		}
+		break;		
 	default:
 		$rv=array('error'=>'Parameter error');
 		break;

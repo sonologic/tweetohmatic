@@ -8,6 +8,7 @@ class Db extends SQLite3 {
 		$this->query("CREATE TABLE IF NOT EXISTS kv (kv_key text primary key,kv_value text)");
 		$this->query("CREATE TABLE IF NOT EXISTS user (username text,password text)");
 		$this->query("CREATE TABLE IF NOT EXISTS perm (username text,perm text)");
+		$this->query("CREATE TABLE IF NOT EXISTS queue (username text,ts int,status text)");
 	}
 	
 	public function hasPerm($user, $perm) {

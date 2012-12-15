@@ -43,8 +43,65 @@ $(document).ready(function() {
 });
 
 function moderate() {
-	$(".desktop").hide();
-	$("#moderate").show('slow');
+	$.getJSON(
+			'json.php',
+			{'c':'gq'},
+			function(data) {
+				$("#moderate table tbody").empty();
+				for(var idx in data.queue) {
+					item=data.queue[idx];
+					$("#moderate table tbody").append(
+							"<tr><td>"+item.ts+"</td>"+
+							"<td>"+item.status+"</td>"+
+							"<td>"+item.username+"</td>"+
+							"<td>"+
+							"<span class='moderate_action' id='del_"+item.username+"_"+item.ts+"'>discard</span> "+
+							"<span class='moderate_action' id='ack_"+item.username+"_"+item.ts+"'>approve</span>"+
+							"</td>"
+					);
+				}
+				
+				for(var idx in data.queue) {
+					item=data.queue[idx];
+					$("#del_"+item.username+"_"+item.ts).data('item',item);
+					$("#del_"+item.username+"_"+item.ts).click(function(event) {
+						item=$(event.currentTarget).data('item');
+						$.getJSON(
+								'json.php',
+								{
+									'c':'d',
+									'u':item.username,
+									'ts':item.ts
+								},
+								function(data) {
+									if(data.error=='') {
+										$(event.currentTarget).parent().parent().remove();
+									}
+								}
+						);
+					});
+					$("#ack_"+item.username+"_"+item.ts).data('item',item);
+					$("#ack_"+item.username+"_"+item.ts).click(function(event) {
+						item=$(event.currentTarget).data('item');
+						$.getJSON(
+								'json.php',
+								{
+									'c':'at',
+									'u':item.username,
+									'ts':item.ts
+								},
+								function(data) {
+									if(data.error=='') {
+										$(event.currentTarget).parent().parent().remove();
+									}
+								}
+						);
+					});					
+				}
+				
+				$(".desktop").hide();
+				$("#moderate").show('slow');				
+			});
 }
 
 function edit_twitter_account() {
