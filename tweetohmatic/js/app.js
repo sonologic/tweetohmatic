@@ -139,9 +139,6 @@ function user_admin() {
 					for(pidx in perm_types) {
 						perms += '<input type="checkbox" name="'+perm_types[pidx]+'" value="1"';
 						
-						console.log(perm_types[pidx]);
-						console.log(perm);
-						
 						if($.inArray(perm_types[pidx],perm)!=-1)
 								 perms += ' checked="checked"';
 						perms += '/>'+perm_types[pidx]+'<br/>';
