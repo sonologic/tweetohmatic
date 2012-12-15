@@ -1,32 +1,39 @@
 <?php
 
-require_once('lib.php');
-require_once('db.class.php');
-
+require_once('private/config.php');
+require_once('inc/lib.php');
+require_once('inc/db.class.php');
 
 if(!isset($_REQUEST['c']))
 	die(json_encode(array('error'=>'Parameter error')));
 
-$db = new Db('private/db.sqlite');
+$db = new Db($dbpath);
+
+switch(AUTH_METHOD) {
+	case 'db':
+		require_once('inc/DbAuth.class.php');
+		$authenticator = new DbAuth($db);
+		break;
+	case 'ldap':
+		require_once('inc/LdapAuth.class.php');
+		$authenticator = new LdapAuth();
+		break;
+	default:
+		throw new Exception("Invalid AUTH_METHOD.");
+		break;
+}
 
 switch($_REQUEST['c']) {
 	case 'ia': // is_authenticated
 		$rv=array('auth'=>0);		
-		if(isset($_SESSION['authenticated']))
-			if($_SESSION['authenticated'])
-				$rv=array(
-						'auth'=>1,
-						'perm'=>$db->getPerm($_SESSION['user'])
-						);
+		if($authenticator->isAuthenticated())
+			$rv=array(
+					'auth'=>1,
+					'perm'=>$db->getPerm($_SESSION['user'])
+					);
 		break;
 	case 'a': // authenticate
-		$stmt = $db->prepare("SELECT * FROM user WHERE username=:user AND password=:pass");
-		$stmt->bindValue(':user',$_REQUEST['u'],SQLITE3_TEXT);
-		$stmt->bindValue(':pass',hash('sha512',$_REQUEST['p']),SQLITE3_TEXT);
-		$result = $stmt->execute();
-		if($row=$result->fetchArray()) {
-			$_SESSION['authenticated']=time();
-			$_SESSION['user']=$row['username'];	
+		if($authenticator->authenticate($_REQUEST['u'],$_REQUEST['p'])) {	
 			$rv=array(
 					'auth'=>1,
 					'perm'=>$db->getPerm($_SESSION['user'])
@@ -59,10 +66,8 @@ switch($_REQUEST['c']) {
 		require_once('twitter.php');
 		if($db->hasPerm($_SESSION['user'],'tweet')) {
 			$rv=tweet($db,$_REQUEST['status']);
-		} elseif($db->hasPerm($_SESSION['user'],'queue')) {
-			$rv=queue($db,$_REQUEST['status']);
 		} else {
-			$rv=array('error'=>'Access denied.');
+			$rv=queue($db,$_REQUEST['status']);
 		}
 		break;
 	case 'gq': // get_queue
@@ -115,6 +120,20 @@ switch($_REQUEST['c']) {
 			$rv=array('error'=>'Access denied.');
 		}
 		break;		
+	case 'ul': // userlist
+		if($db->hasPerm($_SESSION['user'],'user_admin')) {
+			$users=array();
+			foreach($authenticator->getUsers() as $user) {
+				$users[$user]=$db->getPerm($user);
+			}
+			$rv=array(
+					'error'=>'',
+					'users'=>$users
+				);
+		} else {
+			$rv=array('error'=>'Access denied.');
+		}
+		break;
 	default:
 		$rv=array('error'=>'Parameter error');
 		break;

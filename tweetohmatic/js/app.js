@@ -57,7 +57,8 @@ function moderate() {
 							"<td>"+
 							"<span class='moderate_action' id='del_"+item.username+"_"+item.ts+"'>discard</span> "+
 							"<span class='moderate_action' id='ack_"+item.username+"_"+item.ts+"'>approve</span>"+
-							"</td>"
+							"</td>"+
+							"</tr>"
 					);
 				}
 				
@@ -118,6 +119,48 @@ function edit_twitter_account() {
 }
 
 function user_admin() {
+	$.getJSON(
+			'json.php',
+			{'c':'ul'},
+			function(data) {
+				$("#user_admin table tbody").empty();
+				for(var username in data.users) {
+					perm=data.users[username];
+					
+					perm_types=[
+					            'tweet',
+					            'queue',
+					            'twitter_account',
+					            'user_admin',
+					            'moderate'
+					           ];
+					
+					perms="";
+					for(pidx in perm_types) {
+						perms += '<input type="checkbox" name="'+perm_types[pidx]+'" value="1"';
+						
+						console.log(perm_types[pidx]);
+						console.log(perm);
+						
+						if($.inArray(perm_types[pidx],perm)!=-1)
+								 perms += ' checked="checked"';
+						perms += '/>'+perm_types[pidx]+'<br/>';
+					}
+					
+					$("#user_admin table tbody").append(
+							"<tr><td>"+username+"</td>"+
+							"<td>..</td>"+
+							"<td>"+perms+"</td>"+
+							"</tr>"
+					);
+				}				
+				for(idx in data.users) {
+					user=data.users[idx];
+					
+				}
+				$(".desktop").hide();
+				$("#user_admin").show('slow');				
+			});
 	$(".desktop").hide();
 	$("#user_admin").show('slow');
 }

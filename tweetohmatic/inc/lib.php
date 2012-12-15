@@ -1,7 +1,5 @@
 <?php
 
-$debug = true;
-
 function error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 	global $debug;
 
