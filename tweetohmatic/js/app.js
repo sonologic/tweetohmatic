@@ -85,6 +85,7 @@ function moderate() {
 					item=data.queue[idx];
 					$("#del_"+item.username+"_"+item.ts).data('item',item);
 					$("#del_"+item.username+"_"+item.ts).click(function(event) {
+						loading();
 						item=$(event.currentTarget).data('item');
 						$.getJSON(
 								'json.php',
@@ -94,14 +95,18 @@ function moderate() {
 									'ts':item.ts
 								},
 								function(data) {
+									loaded();
 									if(data.error=='') {
 										$(event.currentTarget).parent().parent().remove();
+									} else {
+										alert('Error: '+data.error);
 									}
 								}
 						);
 					});
 					$("#ack_"+item.username+"_"+item.ts).data('item',item);
 					$("#ack_"+item.username+"_"+item.ts).click(function(event) {
+						loading();
 						item=$(event.currentTarget).data('item');
 						$.getJSON(
 								'json.php',
@@ -111,8 +116,11 @@ function moderate() {
 									'ts':item.ts
 								},
 								function(data) {
+									loaded();
 									if(data.error=='') {
 										$(event.currentTarget).parent().parent().remove();
+									} else {
+										alert('Error: '+data.error);
 									}
 								}
 						);
