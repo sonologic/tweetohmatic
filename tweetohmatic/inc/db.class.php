@@ -32,6 +32,19 @@ class Db extends SQLite3 {
 		return $rv;
 	}
 	
+	public function setPerm($user,$perm) {
+		foreach(preg_split('/,/',PERMISSIONS) as $p) {
+			if(array_search($p,$perm)!==false) {
+				$stmt=$this->prepare("INSERT OR REPLACE INTO perm VALUES (:user,:perm)");
+			} else {
+				$stmt=$this->prepare("DELETE FROM perm WHERE username=:user AND perm=:perm");
+			}
+			$stmt->bindValue(':perm',$p);
+			$stmt->bindValue(':user',$user);
+			$stmt->execute();
+		}
+	}
+	
 	public function getValue($key,$default=false) {
 		$stmt=$this->prepare("SELECT * FROM kv WHERE kv_key=:key");
 		$stmt->bindValue(':key',$key);

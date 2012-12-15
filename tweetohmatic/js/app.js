@@ -129,7 +129,6 @@ function user_admin() {
 					
 					perm_types=[
 					            'tweet',
-					            'queue',
 					            'twitter_account',
 					            'user_admin',
 					            'moderate'
@@ -147,14 +146,25 @@ function user_admin() {
 					$("#user_admin table tbody").append(
 							"<tr><td>"+username+"</td>"+
 							"<td>..</td>"+
-							"<td>"+perms+"</td>"+
+							"<td><form id='user_"+username+"' action='#'>"+perms+
+							"<input type='submit' name='save' value='save'>"+
+							"</form></td>"+
 							"</tr>"
 					);
-				}				
-				for(idx in data.users) {
-					user=data.users[idx];
-					
+				
+					$("#user_"+username).data('user',username);
+					$("#user_"+username).submit(function(event) {
+						user = $(event.currentTarget).data('user');
+						$.getJSON(
+								'json.php',
+								'c=su&u='+user+'&'+$(event.currentTarget).serialize(),
+								function(data) {
+									
+								});
+						return false;
+					});
 				}
+				
 				$(".desktop").hide();
 				$("#user_admin").show('slow');				
 			});
@@ -168,8 +178,6 @@ function tweet() {
 }
 
 var menu_items = [
-                  	{ perm:'tweet', label:'tweet', cb:tweet},
-                  	{ perm:'queue', label:'tweet', cb:tweet},
                   	{ perm:'moderate', label:'moderate', cb:moderate},
                   	{ perm:'user_admin', label:'users', cb:user_admin},
                   	{ perm:'twitter_account', label:'twitter', cb:edit_twitter_account},
@@ -178,6 +186,11 @@ var menu_items = [
 function populate_menu(perm) {
 	$("#menu").empty();
 	template = $("#menu_template").html();
+	
+	itemHtml = template.replace("menu_template_id","menu_tweet").replace("menu_template_text","tweet");
+	$("#menu").append(itemHtml);
+	$("#menu_tweet").click(tweet);
+	
 	for(var item_index in menu_items) {
 		item=menu_items[item_index];
 		renderItem=false;

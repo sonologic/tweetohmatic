@@ -134,6 +134,18 @@ switch($_REQUEST['c']) {
 			$rv=array('error'=>'Access denied.');
 		}
 		break;
+	case 'su': // save_user
+		if($db->hasPerm($_SESSION['user'],'user_admin')) {
+			$perm=array();
+			foreach(preg_split('/,/',PERMISSIONS) as $p)
+				if(isset($_REQUEST[$p]) && $_REQUEST[$p])
+					$perm[]=$p;
+			$db->setPerm($_REQUEST['u'],$perm);
+			$rv=array('error'=>'');
+		} else {
+			$rv=array('error'=>'Access denied.');
+		}
+		break;
 	default:
 		$rv=array('error'=>'Parameter error');
 		break;

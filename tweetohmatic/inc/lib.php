@@ -1,5 +1,7 @@
 <?php
 
+define('PERMISSIONS',"tweet,user_admin,moderate,twitter_account");
+
 function error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 	global $debug;
 

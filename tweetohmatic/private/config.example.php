@@ -10,4 +10,6 @@ define('AUTH_METHOD', 'db');
 define('LDAP_HOST', 'ldaps://localhost/');
 define('LDAP_ROOT', 'ou=users,dc=yoyodyne,dc=com');
 
+define('DEFAULT_PERM', array('queue'));
+
 ?>
