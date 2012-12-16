@@ -39,6 +39,31 @@ $(document).ready(function() {
 		return false;		
 	});
 	
+	$("textarea[name='status']").keypress(function(event) {
+		console.log(event.keyCode);
+		len = $("textarea[name='status']").val().length;
+		console.log(len);
+		console.log($("textarea[name='status']").val());
+		if(typeof event.keyCode !== 'undefined') {
+			if(event.keyCode==0) {
+				len+=1;
+				left = 140-len;
+				if(len>140)
+					return false;
+				else
+					$("#tweet_left").text(left);
+			} else {
+				if(event.keyCode==8 || event.keyCode==46) {
+					left = 140-len+1;
+					$("#tweet_left").text(left);				
+				}
+			}
+		} else {
+			left = 140-len;
+			$("#tweet_left").text(left);			
+		}
+	});
+	
 	$.getJSON(
 			'json.php',
 			{'c':'ia'},
@@ -217,6 +242,7 @@ function user_admin() {
 }
 
 function tweet() {
+	$("textarea[name='status']").keypress();
 	$(".desktop").hide();
 	$("#tweet").show('slow');
 }
