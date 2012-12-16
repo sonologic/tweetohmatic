@@ -1,10 +1,98 @@
-WIP
+About tweet-ohm-atic
+====================
 
-Feature wishlist:
-- moderation queue
-- user-based permission model
-  - permission to edit twitter account details
-  - permission to post
-  - permission to suggest
-  - permission to approve
+https://github.com/sonologic/tweetohmatic
+
+Tweet-ohm-atic is a simple front-end to allow multiple users to 
+tweet from a single twitter account securely.
+
+Tweet-ohm-matic connects to twitter through a consumer key and
+secret as well as a access token and secret, performing oauth
+without the need to specify the password to the tweeting users.
+
+In addition, tweets from users can be put into a moderation queue,
+for review and release by one or more moderators.
+
+The user-database can be maintained within a sqlite3 database file
+or in LDAP. In any case, tweet-ohm-matic permissions are maintained
+in a sqlite3 file.
+
+Requirements
+============
+
+* A webserver (apache httpd, lighttpd, nginx, ...);
+* PHP 5.4.x or higher with:
+   * sqlite;
+   * mcrypt;
+   * openssl;
+   * curl.
+
+Installation
+============
+
+Put the contents under tweetohmatic/ in a directory served by your
+webserver.
+
+Copy private/config.example.php to private/config.php, and edit to
+your needs.
+
+The files under private/ should not be accesible, so either lock down
+the private/ dir in your web-server configuration or put those files 
+in a directory outside of the directories served by your webserver.
+
+If you move config.php, be sure to edit its location in json.php.
+
+Make sure the location of the sqlite database file in config.php is
+writable by the user your webserver is running under.
+
+Usage
+=====
+
+Create the first user by accessing the tweet-ohm-matic site on your
+webserver. This will create the sqlite db. You can now use the sqlite3
+command-line tool to insert the first user:
+
+$ sqlite3 private/db.sqlite
+SQLite version 3.7.12.1
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> INSERT INTO user (username, password) VALUES ('foo','d82c4eb5261cb9c8aa9855edd67d1bd10482f41529858d925094d173fa662aa91ff39bc5b188615273484021dfb16fd8284cf684ccf0fc795be3aa2fc1e6c181');
+sqlite> INSERT INTO perm (username, perm) VALUES ('foo','user_admin');
+sqlite> INSERT INTO perm (username, perm) VALUES ('foo','twitter_account');
+sqlite>
+
+The password hash can be calculated by:
+
+$ echo -n "bar" | sha512sum
+d82c4eb5261cb9c8aa9855edd67d1bd10482f41529858d925094d173fa662aa91ff39bc5b188615273484021dfb16fd8284cf684ccf0fc795be3aa2fc1e6c181  -
+$
+
+Now log in to the tweet-ohm-matic and click the twitter menu
+item.
+
+Go to https://dev.twitter.com/ and log in with the twitter account
+that is to be shared. Create a new application, make sure it has
+'read/write' permission. Create the access token and access token
+secret for the application and past consumer key + secret and access
+token + secret into the tweet-ohm-matic screen.
+
+That should be it, apart from creating users and assigning
+permissions.
+
+Four permissions are defined:
+
+- user_admin - edit user permissions
+- tweet - tweet directly, instead of through the moderation queue
+- twitter_account - edit the twitter account details
+- moderate - see the moderation queue and approve queued tweets
+
+TODO
+====
+
+- visual design
 - email notification of new tweets in moderation queue
+- notify moderators by DM of new tweets in moderation queue
+- allow submission of tweets via DM
+- add user option in user admin
+- password change in user admin
+
