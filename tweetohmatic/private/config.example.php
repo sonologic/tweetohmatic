@@ -1,6 +1,6 @@
 <?php
 
-$debug = true;
+$debug = false;
 
 $dbpath = 'private/db.sqlite';
 
