@@ -94,8 +94,11 @@ function moderate() {
 				$("#moderate table tbody").empty();
 				for(var idx in data.queue) {
 					item=data.queue[idx];
+					date=new Date(item.ts*1000);
+					dateStr =date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate()+" ";
+					dateStr+=date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
 					$("#moderate table tbody").append(
-							"<tr><td>"+item.ts+"</td>"+
+							"<tr><td>"+dateStr+"</td>"+
 							"<td>"+item.status+"</td>"+
 							"<td>"+item.username+"</td>"+
 							"<td>"+
